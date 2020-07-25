@@ -7,7 +7,7 @@ const Sequelize = require('sequelize');
 const SessionStore = require('connect-session-sequelize')(session.Store);
 
 const auth = require('./controllers/auth');
-const group = require('./controllers/group');
+const groupRouter = require('./controllers/group');
 const sequelize = require('./db');
 
 const { User, Group, UserGroup, Event, Category, EventCategory } = require('./models');
@@ -17,7 +17,8 @@ const verifyAndSyncDB = async () => {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
     // sync db models
-    await sequelize.sync({ force: false, alter: false });
+    const ALTER_DB = false;
+    await sequelize.sync({ force: ALTER_DB, alter: ALTER_DB });
     console.log('Synced database models.');
   } catch (error) {
     throw new Error('Unable to connect to the database:', error);
@@ -57,10 +58,7 @@ const main = async () => {
   app.post('/signup', auth.signup);
   app.post('/login', auth.login);
   app.post('/logout', auth.logout);
-  app.get('/groups', group.getAll);
-  app.post('/groups', group.create);
-  app.post('/groups/:id/join', group.join);
-  app.post('/groups/:id/leave', group.leave);
+  app.use('/group', groupRouter);
 
   app.get('/session', async (req, res) => {
     const { session } = req;
@@ -82,20 +80,35 @@ const main = async () => {
   
   app.get('/data', async (_, res) => {
     const { Session } = sequelize.models;
-    const users = await User.findAll({ include: ['groups'] });
+
+    const users = await User.findAll({ include: [
+      'createdEvents', {
+        association: 'groups',
+        through: {
+          as: 'user',
+          attributes: ['isOwner', 'isOrganizer']
+        }
+      }]
+    });
+
+    users.forEach(user => {
+      user.groups.forEach(group => {
+        group.location = group.location.coordinates;
+      });
+    });
+
     // for (let i in users[0]) console.log(i)
-    const groups = await Group.findAll();
-    // console.log(groups[0]);
+    const groups = await Group.findAll({ include: ['members', 'events', 'categories'] });
     // for (let i in groups[0]) console.log(i)
-    const userGroups = await UserGroup.findAll();
     const events = await Event.findAll();
     const categories = await Category.findAll();
+    const userGroups = await UserGroup.findAll();
     const eventCategories = await EventCategory.findAll();
     const sessions = await Session.findAll();
 
-    const LONG = 29.7844658;
-    const LAT = -95.776863;
-    const RANGE = 30;
+    const LONG = 29.7807005;
+    const LAT = -95.9741705;
+    const MILE_RANGE = 13;
 
     // const result = await Group.findAll({
     //   where: Sequelize.where(
@@ -106,7 +119,7 @@ const main = async () => {
     //           LONG,
     //           LAT),
     //         4326),
-    //       RANGE * 1609.34),
+    //       MILE_RANGE * 1609.34),
     //     true)
     // });
 
@@ -114,9 +127,9 @@ const main = async () => {
       // result,
       users,
       groups,
-      userGroups,
       events,
       categories,
+      userGroups,
       eventCategories,
       sessions
     });

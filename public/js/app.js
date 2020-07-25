@@ -1,3 +1,25 @@
+const GET = async (url) => {
+  if (!url) {
+    // display error
+    return;
+  }
+
+  const response = await fetch(url, {
+    method: 'GET',
+    mode: 'same-origin',
+    credentials: 'same-origin',
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer'
+  });
+
+  try {
+    const res = await response.json();
+    return res;
+  } catch (err) {
+    return response;
+  }
+};
+
 const POST = async (url, data = {}) => {
   if (!url) {
     // display error
@@ -22,14 +44,14 @@ const POST = async (url, data = {}) => {
   }
 };
 
-const GET = async (url) => {
+const DELETE = async (url) => {
   if (!url) {
     // display error
     return;
   }
 
   const response = await fetch(url, {
-    method: 'GET',
+    method: 'DELETE',
     mode: 'same-origin',
     credentials: 'same-origin',
     redirect: 'follow',
@@ -51,8 +73,7 @@ const signup = async (user) => {
     return;
   }
 
-  const res = await POST('/signup', user);
-  console.log(res);
+  return POST('/signup', user);
 };
 
 const login = async (user) => {
@@ -75,7 +96,16 @@ const createGroup = async (group) => {
     return;
   }
 
-  return POST('/groups', group);
+  return POST('/group', group);
+};
+
+const deleteGroup = async (id) => {
+  if (typeof id === 'undefined') {
+    // display error
+    return;
+  }
+
+  return DELETE(`/group/${id}`);
 };
 
 const joinGroup = async (groupId) => {
@@ -84,7 +114,7 @@ const joinGroup = async (groupId) => {
     return;
   }
 
-  return POST(`/groups/${groupId}/join`);
+  return POST(`/group/${groupId}/join`);
 };
 
 const leaveGroup = async (groupId) => {
@@ -93,7 +123,7 @@ const leaveGroup = async (groupId) => {
     return;
   }
 
-  return POST(`/groups/${groupId}/leave`);
+  return POST(`/group/${groupId}/leave`);
 };
 
 (async () => {
@@ -104,20 +134,25 @@ const leaveGroup = async (groupId) => {
   // });
 
   // await login({
-  //   username: 'coltonje95',
+  //   username: 'coltonje',
   //   password: 'test'
   // });
 
   // await logout();
 
-  console.log(await createGroup({
-    title: 'another fake group',
-    location: { long: 29.7762816, lat: -96.157696 }
-  }));
+  // await createGroup({
+  //   title: 'another fake group no loc',
+  //   location: {
+  //     long: 29.7762816,
+  //     lat: -96.157696
+  //   }
+  // });
 
-  // console.log(await joinGroup(2));
+  // console.log(await deleteGroup(1));
 
-  // await leaveGroup(1);
+  // console.log(await joinGroup(1));
+
+  // console.log(await leaveGroup(1));
   // await leaveGroup(2);
 
   console.log(await session());

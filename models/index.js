@@ -6,23 +6,20 @@ const Category = require('./Category');
 const EventCategory = require('./EventCategory');
 const GroupCategory = require('./GroupCategory');
 
-User.hasMany(Group, { as: 'ownedGroups', foreignKey: 'ownerId' });
-Group.belongsTo(User, { as: 'owner', foreignKey: 'ownerId' });
-
-User.hasMany(Event, { as: 'createdEvented', foreignKey: 'creatorId' });
+User.hasMany(Event, { as: 'createdEvents', foreignKey: 'creatorId' });
 Event.belongsTo(User, { as: 'creator', foreignKey: 'creatorId' });
 
-User.belongsToMany(Group, { as: 'groups', through: UserGroup });
-Group.belongsToMany(User, { as: 'members', through: UserGroup });
+User.belongsToMany(Group, { as: 'groups', foreignKey: 'userId', otherKey: 'groupId', through: UserGroup });
+Group.belongsToMany(User, { as: 'members', foreignKey: 'groupId', otherKey: 'userId', through: UserGroup });
 
 Group.hasMany(Event, { as: 'events' });
 Event.belongsTo(Group, { as: 'group' });
 
-Category.belongsToMany(Event, { as: 'events', through: EventCategory });
-Event.belongsToMany(Category, { as: 'categories', through: EventCategory });
+Category.belongsToMany(Event, { as: 'events', foreignKey: 'categoryId', otherKey: 'eventId', through: EventCategory });
+Event.belongsToMany(Category, { as: 'categories', foreignKey: 'eventId', otherKey: 'categoryId', through: EventCategory });
 
-Category.belongsToMany(Group, { as: 'groups', through: GroupCategory });
-Group.belongsToMany(Category, { as: 'categories', through: GroupCategory });
+Category.belongsToMany(Group, { as: 'groups', foreignKey: 'categoryId', otherKey: 'groupId', through: GroupCategory });
+Group.belongsToMany(Category, { as: 'categories', foreignKey: 'groupId', otherKey: 'categoryId', through: GroupCategory });
 
 module.exports = {
   User,

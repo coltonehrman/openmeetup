@@ -42,8 +42,9 @@ const login = async (req, res) => {
   }
 
   if (!user) {
-    console.error('No user exists');
-    return res.status(500).end();
+    const error = 'No User exists.';
+    console.error(error);
+    return res.status(500).json(error);
   }
 
   if (!(await user.isValidPassword(password))) {

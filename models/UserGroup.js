@@ -20,6 +20,11 @@ UserGroup.init({
       key: 'id'
     }
   },
+  isOwner: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  },
   isOrganizer: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
