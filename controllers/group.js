@@ -114,8 +114,7 @@ const leaveGroup = async (req, res) => {
 };
 
 const addCategoryToGroup = async (req, res) => {
-  const { session, params } = req;
-  const { user: { id: userId } } = session;
+  const { params } = req;
   const { groupId, categoryId } = params;
 
   try {
@@ -125,10 +124,29 @@ const addCategoryToGroup = async (req, res) => {
     // if group doesn't exist
     if (!group) throw new Error('Group does not exist.');
 
-    // for (let i in group) console.log(i)
-
     // add category to group
     const result = await group.addCategory(categoryId);
+    
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json(err.message);
+  }
+};
+
+const removeCategoryFromGroup = async (req, res) => {
+  const { params } = req;
+  const { groupId, categoryId } = params;
+
+  try {
+    // find group
+    const group = await Group.findByPk(groupId);
+
+    // if group doesn't exist
+    if (!group) throw new Error('Group does not exist.');
+
+    // remove category from group
+    const result = await group.removeCategory(categoryId);
     
     res.status(200).json(result);
   } catch (err) {
@@ -143,5 +161,6 @@ router.delete('/:id', hasUserSession, deleteGroup);
 router.post('/:id/join', hasUserSession, joinGroup);
 router.post('/:id/leave', hasUserSession, leaveGroup);
 router.post('/:groupId/category/:categoryId', hasUserSession, addCategoryToGroup);
+router.delete('/:groupId/category/:categoryId', hasUserSession, removeCategoryFromGroup);
 
 module.exports = router;
