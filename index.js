@@ -10,7 +10,16 @@ const auth = require('./controllers/auth');
 const groupRouter = require('./controllers/group');
 const sequelize = require('./db');
 
-const { User, Group, UserGroup, Event, Category, EventCategory } = require('./models');
+const {
+  User,
+  Group,
+  Event,
+  Category,
+  UserGroup,
+  UserEvent,
+  EventCategory,
+  GroupCategory
+} = require('./models');
 
 const verifyAndSyncDB = async () => {
   try {
@@ -82,7 +91,7 @@ const main = async () => {
     const { Session } = sequelize.models;
 
     const users = await User.findAll({ include: [
-      'createdEvents', {
+      'events', {
         association: 'groups',
         through: {
           as: 'user',
@@ -102,8 +111,12 @@ const main = async () => {
     // for (let i in groups[0]) console.log(i)
     const events = await Event.findAll();
     const categories = await Category.findAll();
+    
     const userGroups = await UserGroup.findAll();
+    const userEvents = await UserEvent.findAll();
     const eventCategories = await EventCategory.findAll();
+    const groupCategories = await GroupCategory.findAll();
+
     const sessions = await Session.findAll();
 
     const LONG = 29.7807005;
@@ -130,7 +143,9 @@ const main = async () => {
       events,
       categories,
       userGroups,
+      userEvents,
       eventCategories,
+      groupCategories,
       sessions
     });
   });

@@ -127,11 +127,11 @@ const leaveGroup = async (groupId) => {
 };
 
 (async () => {
-  // await signup({
-  //   username: 'coltonje',
-  //   password: 'test',
-  //   email: 'coltonje@gmail.com'
-  // });
+  await signup({
+    username: 'coltonje',
+    password: 'test',
+    email: 'coltonje@gmail.com'
+  });
 
   // await login({
   //   username: 'coltonje',
