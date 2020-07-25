@@ -8,6 +8,7 @@ const SessionStore = require('connect-session-sequelize')(session.Store);
 
 const auth = require('./controllers/auth');
 const groupRouter = require('./controllers/group');
+const categoryRouter = require('./controllers/category');
 const sequelize = require('./db');
 
 const {
@@ -68,6 +69,7 @@ const main = async () => {
   app.post('/login', auth.login);
   app.post('/logout', auth.logout);
   app.use('/group', groupRouter);
+  app.use('/category', categoryRouter);
 
   app.get('/session', async (req, res) => {
     const { session } = req;
@@ -110,7 +112,7 @@ const main = async () => {
     const groups = await Group.findAll({ include: ['members', 'events', 'categories'] });
     // for (let i in groups[0]) console.log(i)
     const events = await Event.findAll();
-    const categories = await Category.findAll();
+    const categories = await Category.findAll({ include: ['groups'] });
     
     const userGroups = await UserGroup.findAll();
     const userEvents = await UserEvent.findAll();

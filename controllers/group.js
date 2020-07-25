@@ -78,13 +78,16 @@ const joinGroup = async (req, res) => {
     // find group
     const group = await Group.findByPk(groupId);
 
+    // if group doesn't exist
+    if (!group) throw new Error('Group does not exist.');
+
     // add member to group
     const result = await group.addMember(userId);
     
     res.status(200).json(result);
   } catch (err) {
-    console.error('Something went wrong: ', err);
-    res.status(500).end();
+    console.error(err.message);
+    res.status(500).json(err.message);
   }
 };
 
@@ -97,13 +100,40 @@ const leaveGroup = async (req, res) => {
     // find group
     const group = await Group.findByPk(groupId);
 
+    // if group doesn't exist
+    if (!group) throw new Error('Group does not exist.');
+
     // remove member from group
     const result = await group.removeMember(userId);
 
     res.status(200).json(result);
   } catch (err) {
-    console.error('Something went wrong: ', err);
-    res.status(500).end();
+    console.error(err.message);
+    res.status(500).json(err.message);
+  }
+};
+
+const addCategoryToGroup = async (req, res) => {
+  const { session, params } = req;
+  const { user: { id: userId } } = session;
+  const { groupId, categoryId } = params;
+
+  try {
+    // find group
+    const group = await Group.findByPk(groupId);
+
+    // if group doesn't exist
+    if (!group) throw new Error('Group does not exist.');
+
+    // for (let i in group) console.log(i)
+
+    // add category to group
+    const result = await group.addCategory(categoryId);
+    
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json(err.message);
   }
 };
 
@@ -112,5 +142,6 @@ router.post('/', hasUserSession, hasBodyProps('title'), createGroup);
 router.delete('/:id', hasUserSession, deleteGroup);
 router.post('/:id/join', hasUserSession, joinGroup);
 router.post('/:id/leave', hasUserSession, leaveGroup);
+router.post('/:groupId/category/:categoryId', hasUserSession, addCategoryToGroup);
 
 module.exports = router;

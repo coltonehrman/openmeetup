@@ -126,12 +126,40 @@ const leaveGroup = async (groupId) => {
   return POST(`/group/${groupId}/leave`);
 };
 
+const createCategory = async (category) => {
+  const { title } = category;
+  if (!title) {
+    // display error
+    return;
+  }
+
+  return POST('/category', category);
+};
+
+const deleteCategory = async (categoryId) => {
+  if (typeof categoryId === 'undefined') {
+    // display error
+    return;
+  }
+
+  return DELETE(`/category/${categoryId}`);
+};
+
+const addCategoryToGroup = async (groupId, categoryId) => {
+  if (typeof groupId === 'undefined' || typeof categoryId === 'undefined') {
+    // display error
+    return;
+  }
+
+  return POST(`/group/${groupId}/category/${categoryId}`);
+};
+
 (async () => {
-  await signup({
-    username: 'coltonje',
-    password: 'test',
-    email: 'coltonje@gmail.com'
-  });
+  // await signup({
+  //   username: 'coltonje',
+  //   password: 'test',
+  //   email: 'coltonje@gmail.com'
+  // });
 
   // await login({
   //   username: 'coltonje',
@@ -154,6 +182,14 @@ const leaveGroup = async (groupId) => {
 
   // console.log(await leaveGroup(1));
   // await leaveGroup(2);
+
+  // console.log(await createCategory({
+  //   title: 'Technology'
+  // }));
+
+  // console.log(await deleteCategory(4));
+
+  // console.log(await addCategoryToGroup(1, 4));
 
   console.log(await session());
 
