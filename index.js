@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const Sequelize = require('sequelize');
 const SessionStore = require('connect-session-sequelize')(session.Store);
 
 const auth = require('./controllers/auth');
@@ -16,8 +17,8 @@ const verifyAndSyncDB = async () => {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
     // sync db models
-    // await sequelize.sync({ force: true, alter: true });
-    // console.log('Synced database models.');
+    await sequelize.sync({ force: false, alter: false });
+    console.log('Synced database models.');
   } catch (error) {
     throw new Error('Unable to connect to the database:', error);
   }
@@ -49,6 +50,8 @@ const main = async () => {
     rolling: true
   }));
 
+  sequelizeSessionStore.sync();
+
   app.use(express.static(path.join(__dirname, '/public')));
 
   app.post('/signup', auth.signup);
@@ -79,21 +82,36 @@ const main = async () => {
   
   app.get('/data', async (_, res) => {
     const { Session } = sequelize.models;
-    let users = await User.findAll();
-
-    users = await Promise.all(users.map(async user => ({
-      ...(user.dataValues),
-      groups: await user.getGroups()
-    })));
-
+    const users = await User.findAll({ include: ['groups'] });
+    // for (let i in users[0]) console.log(i)
     const groups = await Group.findAll();
+    // console.log(groups[0]);
+    // for (let i in groups[0]) console.log(i)
     const userGroups = await UserGroup.findAll();
     const events = await Event.findAll();
     const categories = await Category.findAll();
     const eventCategories = await EventCategory.findAll();
     const sessions = await Session.findAll();
 
+    const LONG = 29.7844658;
+    const LAT = -95.776863;
+    const RANGE = 30;
+
+    // const result = await Group.findAll({
+    //   where: Sequelize.where(
+    //     Sequelize.fn('ST_DWithin',
+    //       Sequelize.col('location'),
+    //       Sequelize.fn('ST_SetSRID',
+    //         Sequelize.fn('ST_MakePoint',
+    //           LONG,
+    //           LAT),
+    //         4326),
+    //       RANGE * 1609.34),
+    //     true)
+    // });
+
     res.json({
+      // result,
       users,
       groups,
       userGroups,

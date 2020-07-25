@@ -68,6 +68,34 @@ const login = async (user) => {
 const logout = async () => POST('/logout');
 const session = async () => GET('/session');
 
+const createGroup = async (group) => {
+  const { title } = group;
+  if (!title) {
+    // display error
+    return;
+  }
+
+  return POST('/groups', group);
+};
+
+const joinGroup = async (groupId) => {
+  if (typeof groupId === 'undefined') {
+    // display error
+    return;
+  }
+
+  return POST(`/groups/${groupId}/join`);
+};
+
+const leaveGroup = async (groupId) => {
+  if (typeof groupId === 'undefined') {
+    // display error
+    return;
+  }
+
+  return POST(`/groups/${groupId}/leave`);
+};
+
 (async () => {
   // await signup({
   //   username: 'coltonje',
@@ -75,12 +103,22 @@ const session = async () => GET('/session');
   //   email: 'coltonje@gmail.com'
   // });
 
-  await login({
-    username: 'coltonje95',
-    password: 'test'
-  });
+  // await login({
+  //   username: 'coltonje95',
+  //   password: 'test'
+  // });
 
   // await logout();
+
+  console.log(await createGroup({
+    title: 'another fake group',
+    location: { long: 29.7762816, lat: -96.157696 }
+  }));
+
+  // console.log(await joinGroup(2));
+
+  // await leaveGroup(1);
+  // await leaveGroup(2);
 
   console.log(await session());
 

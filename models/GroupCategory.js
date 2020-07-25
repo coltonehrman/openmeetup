@@ -6,14 +6,14 @@ const Category = require('./Category');
 class GroupCategory extends Model {}
 
 GroupCategory.init({
-  GroupId: {
+  groupId: {
     type: DataTypes.INTEGER,
     references: {
       model: Group,
       key: 'id'
     }
   },
-  CategoryId: {
+  categoryId: {
     type: DataTypes.INTEGER,
     references: {
       model: Category,

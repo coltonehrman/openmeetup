@@ -32,7 +32,8 @@ User.init({
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
-  }
+  },
+  location: DataTypes.GEOGRAPHY('POINT', 4326)
 }, { sequelize });
 
 const hashPassword = (password) => new Promise((resolve, reject) => {

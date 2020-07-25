@@ -2,14 +2,21 @@ const { Group, User } = require('../models');
 
 const create = async (req, res) => {
   const { body } = req;
-  const { title, description } = body;
+  const { title, description, location = {} } = body;
+  const { long, lat } = location;
 
   if (!title) {
     console.error('Must include title for Group.');
     return res.status(500).end();
   }
 
-  const group = await Group.create({ title, description });
+  const locationPoint = (typeof long !== 'undefined' || typeof lat !== 'undefined') ? {
+    type: 'Point',
+    coordinates: [long, lat],
+    crs: { type: 'name', properties: { name: 'EPSG:4326'} }
+  } : null;
+
+  const group = await Group.create({ title, description, location: locationPoint });
   res.status(200).json(group);
 };
 

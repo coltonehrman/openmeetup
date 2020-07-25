@@ -6,14 +6,14 @@ const Category = require('./Category');
 class EventCategory extends Model {}
 
 EventCategory.init({
-  EventId: {
+  eventId: {
     type: DataTypes.INTEGER,
     references: {
       model: Event,
       key: 'id'
     }
   },
-  CategoryId: {
+  categoryId: {
     type: DataTypes.INTEGER,
     references: {
       model: Category,

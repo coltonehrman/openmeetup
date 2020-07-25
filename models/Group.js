@@ -16,7 +16,8 @@ Group.init({
   description: {
     type: DataTypes.TEXT,
     allowNull: true
-  }
+  },
+  location: DataTypes.GEOGRAPHY('POINT', 4326)
 }, { sequelize });
 
 module.exports = Group;

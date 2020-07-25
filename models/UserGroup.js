@@ -6,14 +6,14 @@ const Group = require('./Group');
 class UserGroup extends Model {}
 
 UserGroup.init({
-  UserId: {
+  userId: {
     type: DataTypes.INTEGER,
     references: {
       model: User,
       key: 'id'
     }
   },
-  GroupId: {
+  groupId: {
     type: DataTypes.INTEGER,
     references: {
       model: Group,
