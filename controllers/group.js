@@ -17,6 +17,10 @@ const createGroup = async (req, res) => {
   const { title, description, location } = body;
   let lat, long;
 
+  if (title.toString().trim() === '') {
+    return res.status(500).json('Group must have a title.');
+  }
+
   if (typeof location === 'object' && location.long && location.lat) {
     long = location.long;
     lat = location.lat;
@@ -27,8 +31,16 @@ const createGroup = async (req, res) => {
     lat = location[1];
   }
 
+  if (
+    (Number.isNaN(parseFloat(long)) || Number.isNaN(parseFloat(lat))) ||
+    (long.toString().trim() === '' || lat.toString().trim() === '')
+  ) {
+    long = null;
+    lat = null;
+  }
+
   // create PostGID Geography Point data type
-  const locationPoint = (typeof long !== 'undefined' || typeof lat !== 'undefined') ? {
+  const locationPoint = (long && lat && (typeof long !== 'undefined' || typeof lat !== 'undefined')) ? {
     type: 'Point',
     coordinates: [long, lat],
     crs: { type: 'name', properties: { name: 'EPSG:4326'} }
@@ -59,9 +71,9 @@ const deleteGroup = async (req, res) => {
     ]);
 
     // delete group
-    const result = await group.destroy();
+    await group.destroy();
 
-    res.status(200).json(result);
+    res.status(200).json(group);
   } catch (err) {
     const { message } = err;
     console.error(message);
