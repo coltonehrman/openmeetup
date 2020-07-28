@@ -13,8 +13,8 @@ Event.belongsToMany(User, { as: 'members', foreignKey: 'eventId', otherKey: 'use
 User.belongsToMany(Group, { as: 'groups', foreignKey: 'userId', otherKey: 'groupId', through: UserGroup });
 Group.belongsToMany(User, { as: 'members', foreignKey: 'groupId', otherKey: 'userId', through: UserGroup });
 
-Group.hasMany(Event, { as: 'events' });
-Event.belongsTo(Group, { as: 'group' });
+Group.hasMany(Event, { as: 'events', foreignKey: 'groupId' });
+Event.belongsTo(Group, { as: 'group', foreignKey: 'groupId' });
 
 Category.belongsToMany(Event, { as: 'events', foreignKey: 'categoryId', otherKey: 'eventId', through: EventCategory });
 Event.belongsToMany(Category, { as: 'categories', foreignKey: 'eventId', otherKey: 'categoryId', through: EventCategory });

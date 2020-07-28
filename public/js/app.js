@@ -126,6 +126,46 @@ const leaveGroup = async (groupId) => {
   return POST(`/group/${groupId}/leave`);
 };
 
+const createEvent = async (event) => {
+  return POST('/event', event);
+};
+
+const deleteEvent = async (id) => {
+  if (typeof id === 'undefined') {
+    // display error
+    return;
+  }
+
+  return DELETE(`/event/${id}`);
+};
+
+const assignGroupToEvent = async (eventId, groupId) => {
+  if (typeof eventId === 'undefined' || typeof groupId === 'undefined') {
+    // display error
+    return;
+  }
+
+  return POST(`/event/${eventId}/group/${groupId}`);
+};
+
+const joinEvent = async (eventId) => {
+  if (typeof eventId === 'undefined') {
+    // display error
+    return;
+  }
+
+  return POST(`/event/${eventId}/join`);
+};
+
+const leaveEvent = async (eventId) => {
+  if (typeof eventId === 'undefined') {
+    // display error
+    return;
+  }
+
+  return POST(`/event/${eventId}/leave`);
+};
+
 const createCategory = async (category) => {
   const { title } = category;
   if (!title) {
@@ -169,14 +209,14 @@ const addCategoryToGroup = async (groupId, categoryId) => {
   // await logout();
 
   // await createGroup({
-  //   title: 'another fake group no loc',
+  //   title: 'fake group with loc',
   //   location: {
   //     long: 29.7762816,
   //     lat: -96.157696
   //   }
   // });
 
-  // console.log(await deleteGroup(1));
+  // console.log(await deleteGroup(2));
 
   // console.log(await joinGroup(1));
 
@@ -190,6 +230,14 @@ const addCategoryToGroup = async (groupId, categoryId) => {
   // console.log(await deleteCategory(4));
 
   // console.log(await addCategoryToGroup(1, 4));
+
+  // console.log(await createEvent());
+
+  // console.log(await deleteEvent(2));
+
+  // console.log(await joinEvent(2));
+
+  // console.log(await assignGroupToEvent(2, 1));
 
   console.log(await session());
 

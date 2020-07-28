@@ -7,7 +7,7 @@ const router = express.Router();
 
 const getAll = async (_, res) => {
   // find all groups
-  const groups = await Group.findAll();
+  const groups = await Group.findAll({ include: ['members', 'events', 'categories']});
 
   res.status(200).json(groups);
 };

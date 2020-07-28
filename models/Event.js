@@ -5,14 +5,16 @@ class Event extends Model {}
 
 Event.init({
   title: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    allowNull: true
   },
   description: {
     type: DataTypes.TEXT,
     allowNull: true
   },
   time: {
-    type: DataTypes.DATE
+    type: DataTypes.DATE,
+    allowNull: true
   },
   isRemote: {
     type: DataTypes.BOOLEAN,

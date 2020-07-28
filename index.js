@@ -8,6 +8,7 @@ const SessionStore = require('connect-session-sequelize')(session.Store);
 
 const auth = require('./controllers/auth');
 const groupRouter = require('./controllers/group');
+const eventRouter = require('./controllers/event');
 const categoryRouter = require('./controllers/category');
 const sequelize = require('./db');
 
@@ -69,6 +70,7 @@ const main = async () => {
   app.post('/login', auth.login);
   app.post('/logout', auth.logout);
   app.use('/group', groupRouter);
+  app.use('/event', eventRouter);
   app.use('/category', categoryRouter);
 
   app.get('/session', async (req, res) => {
@@ -84,7 +86,7 @@ const main = async () => {
       return res.status(200).json(user);
     }
 
-    res.status(200).json({});
+    res.status(200).json(null);
   });
 
   app.get('/', (_, res) => res.sendFile(path.join(__dirname, '/index.html')));
@@ -111,8 +113,8 @@ const main = async () => {
     // for (let i in users[0]) console.log(i)
     const groups = await Group.findAll({ include: ['members', 'events', 'categories'] });
     // for (let i in groups[0]) console.log(i)
-    const events = await Event.findAll();
-    const categories = await Category.findAll({ include: ['groups'] });
+    const events = await Event.findAll({ include: ['members', 'group', 'categories'] });
+    const categories = await Category.findAll({ include: ['groups', 'events'] });
     
     const userGroups = await UserGroup.findAll();
     const userEvents = await UserEvent.findAll();
