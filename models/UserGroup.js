@@ -20,15 +20,20 @@ UserGroup.init({
       key: 'id'
     }
   },
+  isMember: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  },
   isOwner: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
   },
-  isOrganizer: {
+  isCreator: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
-    defaultValue: false,
+    defaultValue: false
   }
 }, { sequelize });
 

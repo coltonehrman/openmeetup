@@ -11,7 +11,7 @@ export const fetchGroups = () => dispatch => {
       dispatch(actions.groupsFetches(data));
     })
     .catch(error => {
-      error.clientMessage = "Can't find customers";
+      error.clientMessage = 'Can\'t find groups';
       dispatch(actions.catchError({ error, callType: callTypes.list }));
     });
 };
@@ -39,7 +39,7 @@ export const deleteGroup = id => dispatch => {
       dispatch(actions.groupDeleted(id));
     })
     .catch(error => {
-      error.clientMessage = "Can't delete customer";
+      error.clientMessage = 'Can\'t delete group';
       dispatch(actions.catchError({ error, callType: callTypes.action }));
     });
 };

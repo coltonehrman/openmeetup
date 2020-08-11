@@ -54,7 +54,7 @@ const deleteEvent = async (req, res) => {
     // remove all associations
     await Promise.all([
       event.setGroup(null),   // remove group association
-      event.setMembers([]),   // remove all member associations
+      event.setUsers([]),     // remove all user associations
       event.setCategories([]) // remove all category associations
     ]);
 
@@ -102,8 +102,8 @@ const joinEvent = async (req, res) => {
     // if event doesn't exist
     if (!event) throw new Error('Event does not exist.');
 
-    // add member to event
-    const result = await event.addMember(userId);
+    // add user to event
+    const result = await event.addUser(userId);
     
     res.status(200).json(result);
   } catch (err) {

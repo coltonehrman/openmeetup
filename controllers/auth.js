@@ -5,8 +5,9 @@ const signup = async (req, res) => {
   const { username, email, password } = body;
 
   if (!username || !email || !password) {
-    console.error('Please send all required fields to create User object.');
-    return res.status(500).end();
+    const error = 'Please send all required fields to create User object.';
+    console.error(error);
+    return res.status(500).json(error);
   }
 
   try {

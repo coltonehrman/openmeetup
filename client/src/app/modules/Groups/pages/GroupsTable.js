@@ -3,7 +3,7 @@ import SVG from 'react-inlinesvg';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { toAbsoluteUrl } from '../../../../_metronic/_helpers';
 import GroupData from './GroupData';
-import GroupEditModal from './GroupEditModal';
+import GroupModal from './GroupModal';
 import * as actions from '../_redux/groupsActions';
 import _ from 'lodash';
 
@@ -25,10 +25,9 @@ export function GroupsTable({ className }) {
 
   return (
     <>
-      <GroupEditModal
+      <GroupModal
         show={showModal}
         onHide={() => setModalShowing(false)}
-        dispatch={dispatch}
       />
 
       <div className={`card card-custom ${className}`}>
@@ -79,17 +78,20 @@ export function GroupsTable({ className }) {
                   </th>
                   <th style={{ width: "20px" }}>id</th>
                   <th>title</th>
-                  <th>members</th>
+                  <th>users</th>
                   <th>events</th>
                   <th>categories</th>
+                  <th>member</th>
+                  <th>owner</th>
+                  <th>creator</th>
                   <th className="pr-0 text-right" style={{ minWidth: "100px" }}>
                     action
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {entities && entities.map((group) => (
-                  <GroupData key={_.uniqueId()} {...group} dispatch={dispatch} />)
+                {entities && entities.map(group => (
+                  <GroupData key={group.id} {...group} />)
                 )}
               </tbody>
             </table>

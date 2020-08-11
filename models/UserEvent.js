@@ -20,7 +20,7 @@ UserEvent.init({
       key: 'id'
     }
   },
-  isCreator: {
+  isParticipant: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
@@ -29,6 +29,11 @@ UserEvent.init({
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false,
+  },
+  isCreator: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   }
 }, { sequelize });
 

@@ -1,17 +1,22 @@
 import React from 'react';
 import SVG from 'react-inlinesvg';
+import Badge from 'react-bootstrap/Badge';
 import { toAbsoluteUrl } from '../../../../_metronic/_helpers';
 import * as actions from '../_redux/groupsActions';
+import { useDispatch } from 'react-redux';
+import _ from 'lodash';
 
 const GroupData = ({
   id,
   title = 'Default Group Title',
   description = 'default group description',
-  members = [],
+  users = [],
   events = [],
   categories = [],
-  dispatch
+  me
 }) => {
+  const dispatch = useDispatch();
+
   return (
     <tr>
       {/* begin::Checkbox */}
@@ -29,7 +34,7 @@ const GroupData = ({
         </span>
       </td>
       {/* end::ID */}
-      
+
       {/* begin::Title & Description */}
       <td>
         <span className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
@@ -42,13 +47,13 @@ const GroupData = ({
       </td>
       {/* end::Title & Description */}
 
-      {/* begin::Members */}
+      {/* begin::Users */}
       <td>
         <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
-          {members.length}
+          {users.length}
         </span>
       </td>
-      {/* end::Members */}
+      {/* end::Users */}
 
       {/* begin::Events */}
       <td>
@@ -65,6 +70,36 @@ const GroupData = ({
         </span>
       </td>
       {/* end::Categories */}
+
+      {/* begin::MEMBER */}
+      <td>
+        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+          {Boolean(_.get(me, 'isMember', false)) ?
+            <Badge variant="success" as="button" className="border-0" onClick={console.log}>MEMBER</Badge> :
+            <Badge variant="secondar" as="button" className="border-0" onClick={console.log}>NOT MEMBER</Badge>}
+        </span>
+      </td>
+      {/* end::MEMBER */}
+
+      {/* begin::OWNER */}
+      <td>
+        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+          {Boolean(_.get(me, 'isOwner', false)) ?
+            <Badge variant="success" as="button" className="border-0">OWNER</Badge> :
+            <Badge variant="secondar" as="button" className="border-0">NOT OWNER</Badge>}
+        </span>
+      </td>
+      {/* end::OWNER */}
+
+      {/* begin::CREATOR */}
+      <td>
+        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+          {Boolean(_.get(me, 'isCreator', false)) ?
+            <Badge variant="success" as="button" className="border-0">CREATOR</Badge> :
+            <Badge variant="secondar" as="button" className="border-0">NOT CREATOR</Badge>}
+        </span>
+      </td>
+      {/* end::CREATOR */}
 
       {/* begin::Actions */}
       <td className="pr-0 text-right">

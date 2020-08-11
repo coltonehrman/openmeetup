@@ -26,13 +26,11 @@ export const reducer = persistReducer(
       }
 
       case actionTypes.Register: {
-        const { authToken } = action.payload;
-
-        return { authToken, user: undefined };
+        const { user } = action.payload;
+        return { user };
       }
 
       case actionTypes.Logout: {
-        // TODO: Change this code. Actions in reducer aren't allowed.
         return initialAuthState;
       }
 
@@ -48,14 +46,24 @@ export const reducer = persistReducer(
 );
 
 export const actions = {
-  login: (user) => ({ type: actionTypes.Login, payload: { user } }),
-  register: (authToken) => ({
-    type: actionTypes.Register,
-    payload: { authToken },
+  login: (user) => ({
+    type: actionTypes.Login,
+    payload: { user }
   }),
-  logout: () => ({ type: actionTypes.Logout }),
-  requestUser: () => ({ type: actionTypes.UserRequested }),
-  fulfillUser: (user) => ({ type: actionTypes.UserLoaded, payload: { user } }),
+  register: (user) => ({
+    type: actionTypes.Register,
+    payload: { user },
+  }),
+  logout: () => ({
+    type: actionTypes.Logout
+  }),
+  requestUser: () => ({
+    type: actionTypes.UserRequested
+  }),
+  fulfillUser: (user) => ({
+    type: actionTypes.UserLoaded,
+    payload: { user }
+  })
 };
 
 export function* saga() {

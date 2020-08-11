@@ -99,21 +99,22 @@ const main = async () => {
         association: 'groups',
         through: {
           as: 'user',
-          attributes: ['isOwner', 'isOrganizer']
+          attributes: ['isMember', 'isOwner', 'isCreator']
         }
       }]
     });
 
     users.forEach(user => {
       user.groups.forEach(group => {
-        group.location = group.location.coordinates;
+        if (group.location) group.location = group.location.coordinates;
       });
     });
 
-    // for (let i in users[0]) console.log(i)
-    const groups = await Group.findAll({ include: ['members', 'events', 'categories'] });
-    // for (let i in groups[0]) console.log(i)
-    const events = await Event.findAll({ include: ['members', 'group', 'categories'] });
+    const groups = await Group.findAll({
+      include: ['users', 'events', 'categories']
+    });
+
+    const events = await Event.findAll({ include: ['users', 'group', 'categories'] });
     const categories = await Category.findAll({ include: ['groups', 'events'] });
     
     const userGroups = await UserGroup.findAll();

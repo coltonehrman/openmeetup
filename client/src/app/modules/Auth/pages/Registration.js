@@ -8,46 +8,37 @@ import * as auth from "../_redux/authRedux";
 import { register } from "../_redux/authCrud";
 
 const initialValues = {
-  fullname: "",
-  email: "",
-  username: "",
-  password: "",
-  changepassword: "",
-  acceptTerms: false,
+  email: '',
+  username: '',
+  password: '',
+  changepassword: '',
+  acceptTerms: true
 };
 
 function Registration(props) {
   const { intl } = props;
   const [loading, setLoading] = useState(false);
   const RegistrationSchema = Yup.object().shape({
-    fullname: Yup.string()
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
-        })
-      ),
     email: Yup.string()
       .email("Wrong email format")
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+      .min(3, "Minimum 3 characters")
+      .max(50, "Maximum 50 characters")
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD",
         })
       ),
     username: Yup.string()
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+      .min(3, "Minimum 3 characters")
+      .max(50, "Maximum 50 characters")
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD",
         })
       ),
     password: Yup.string()
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+      .min(3, "Minimum 3 characters")
+      .max(50, "Maximum 50 characters")
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD",
@@ -96,9 +87,9 @@ function Registration(props) {
     validationSchema: RegistrationSchema,
     onSubmit: (values, { setStatus, setSubmitting }) => {
       enableLoading();
-      register(values.email, values.fullname, values.username, values.password)
-        .then(({ data: { accessToken } }) => {
-          props.register(accessToken);
+      register(values.username, values.email, values.password)
+        .then(({ data }) => {
+          props.register(data);
           disableLoading();
         })
         .catch(() => {
@@ -136,25 +127,6 @@ function Registration(props) {
           </div>
         )}
         {/* end: Alert */}
-
-        {/* begin: Fullname */}
-        <div className="form-group fv-plugins-icon-container">
-          <input
-            placeholder="Full name"
-            type="text"
-            className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
-              "fullname"
-            )}`}
-            name="fullname"
-            {...formik.getFieldProps("fullname")}
-          />
-          {formik.touched.fullname && formik.errors.fullname ? (
-            <div className="fv-plugins-message-container">
-              <div className="fv-help-block">{formik.errors.fullname}</div>
-            </div>
-          ) : null}
-        </div>
-        {/* end: Fullname */}
 
         {/* begin: Email */}
         <div className="form-group fv-plugins-icon-container">
@@ -235,7 +207,7 @@ function Registration(props) {
         {/* end: Confirm Password */}
 
         {/* begin: Terms and Conditions */}
-        <div className="form-group">
+        {/* <div className="form-group">
           <label className="checkbox">
             <input
               type="checkbox"
@@ -244,7 +216,7 @@ function Registration(props) {
               {...formik.getFieldProps("acceptTerms")}
             />
             <Link to="/terms" target="_blank" className="mr-1" rel="noopener noreferrer">
-            I agree the Terms & Conditions
+              I agree the Terms & Conditions
             </Link>
             <span />
           </label>
@@ -253,8 +225,9 @@ function Registration(props) {
               <div className="fv-help-block">{formik.errors.acceptTerms}</div>
             </div>
           ) : null}
-        </div>
+        </div> */}
         {/* end: Terms and Conditions */}
+
         <div className="form-group d-flex flex-wrap flex-center">
           <button
             type="submit"

@@ -2,19 +2,27 @@ const express = require('express');
 const hasBodyProps = require('../middleware/hasBodyProps');
 const hasUserSession = require('../middleware/hasUserSession');
 const { Group } = require('../models');
+const _ = require('lodash');
 
 const router = express.Router();
 
-const getAll = async (_, res) => {
+const getAll = async (req, res) => {
+  const me = _.get(req.session, 'user.id', null);
+
   // find all groups
-  const groups = await Group.findAll({ include: ['members', 'events', 'categories']});
+  const groups = await Group.findAll({
+    include: ['users', 'events', 'categories']
+  });
+
+  await Promise.all(groups.map(g => g.populateMe(me)));
 
   res.status(200).json(groups);
 };
 
 const createGroup = async (req, res) => {
-  const { body } = req;
+  const { body, session } = req;
   const { title, description, location } = body;
+  const { user: { id: userId } } = session;
   let lat, long;
 
   if (title.toString().trim() === '') {
@@ -47,7 +55,20 @@ const createGroup = async (req, res) => {
   } : null;
 
   // create group
-  const group = await Group.create({ title, description, location: locationPoint });
+  const group = await Group.create({ title, description, location: locationPoint }, {
+    include: ['users']
+  });
+
+  await group.addUser(userId, {
+    through: {
+      isMember: true,
+      isOwner: true,
+      isCreator: true
+    }
+  });
+
+  await group.reload();
+  await group.populateMe(userId);
 
   res.status(200).json(group);
 };
@@ -65,7 +86,7 @@ const deleteGroup = async (req, res) => {
 
     // remove all associations
     await Promise.all([
-      group.setMembers([]),   // remove all member associations
+      group.setUsers([]),     // remove all user associations
       group.setEvents([]),    // remove all event associations
       group.setCategories([]) // remove all category associations
     ]);
@@ -93,8 +114,8 @@ const joinGroup = async (req, res) => {
     // if group doesn't exist
     if (!group) throw new Error('Group does not exist.');
 
-    // add member to group
-    const result = await group.addMember(userId);
+    // add user to group
+    const result = await group.addUser(userId);
     
     res.status(200).json(result);
   } catch (err) {
@@ -115,8 +136,8 @@ const leaveGroup = async (req, res) => {
     // if group doesn't exist
     if (!group) throw new Error('Group does not exist.');
 
-    // remove member from group
-    const result = await group.removeMember(userId);
+    // remove user from group
+    const result = await group.removeUser(userId);
 
     res.status(200).json(result);
   } catch (err) {

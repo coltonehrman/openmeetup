@@ -1,7 +1,7 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
 import React, { useMemo, useLayoutEffect, useEffect } from "react";
 import objectPath from "object-path";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import { QuickActions } from "./components/QuickActions";
 import { BreadCrumbs } from "./components/BreadCrumbs";
 import {
@@ -13,6 +13,7 @@ import { useHtmlClassService } from "../../_core/MetronicLayout";
 export function SubHeader() {
   const uiService = useHtmlClassService();
   const location = useLocation();
+  const history = useHistory();
   const subheader = useSubheader();
 
   const layoutProps = useMemo(() => {
@@ -81,11 +82,23 @@ export function SubHeader() {
         <div className="d-flex align-items-center">
           <button
             type="button"
-            className="btn btn-transparent-white font-weight-bold  py-3 px-6 mr-4"
+            className="btn btn-transparent-white font-weight-bold py-3 px-6 mr-4"
+            disabled={location.pathname === '/dashboard/groups'}
+            onClick={() => history.push('/dashboard/groups')}
           >
-            Reports
+            Groups
           </button>
-          <QuickActions />
+
+          <button
+            type="button"
+            className="btn btn-transparent-white font-weight-bold py-3 px-6 mr-4"
+            disabled={location.pathname === '/dashboard/events'}
+            onClick={() => history.push('/dashboard/events')}
+          >
+            Events
+          </button>
+
+          {/* <QuickActions /> */}
         </div>
       </div>
     </div>

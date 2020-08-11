@@ -2,10 +2,11 @@ import React from 'react';
 import * as Yup from 'yup';
 import { Modal } from 'react-bootstrap';
 import { Formik, Form, Field } from 'formik';
+import { useDispatch } from 'react-redux';
 import { Input } from '../../../../_metronic/_partials/controls';
 import * as actions from '../_redux/groupsActions'
 
-const GroupEditDialogHeader = ({ id, title }) => {
+const GroupDialogHeader = ({ id, title }) => {
   return (
     <Modal.Header>
       <Modal.Title id="edit-group-modal-sizes-title-lg">{title}</Modal.Title>
@@ -13,7 +14,7 @@ const GroupEditDialogHeader = ({ id, title }) => {
   );
 };
 
-const GroupEditForm = ({ dispatch, onHide }) => {
+const GroupForm = ({ dispatch, onHide }) => {
   const initGroup = {
     id: null,
     title: '',
@@ -127,7 +128,9 @@ const GroupEditForm = ({ dispatch, onHide }) => {
   );
 };
 
-const GroupEditModal = ({ id, show, onHide }) => {
+const GroupModal = ({ id, show, onHide }) => {
+  const dispatch = useDispatch();
+
   return (
     <Modal
       size="lg"
@@ -135,10 +138,10 @@ const GroupEditModal = ({ id, show, onHide }) => {
       onHide={onHide}
       aria-labelledby="edit-group-modal-sizes-title-lg"
     >
-      <GroupEditDialogHeader id={id} title="Group" />
-      <GroupEditForm onHide={onHide} />
+      <GroupDialogHeader id={id} title="Group" />
+      <GroupForm dispatch={dispatch} onHide={onHide} />
     </Modal>
   );
 };
 
-export default GroupEditModal;
+export default GroupModal;

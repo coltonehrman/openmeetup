@@ -67,7 +67,6 @@ export function Layout({ children }) {
                   )}
 
                   {!layoutProps.asideDisplay && <>{children}</>}
-
                 </>
               )}
 
@@ -88,8 +87,6 @@ export function Layout({ children }) {
                   {/*end::Container*/}
                 </div>
               )}
-
-
               {/*end::Entry*/}
             </div>
             {/*end::Content*/}

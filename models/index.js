@@ -8,10 +8,10 @@ const GroupCategory = require('./GroupCategory');
 const EventCategory = require('./EventCategory');
 
 User.belongsToMany(Event, { as: 'events', foreignKey: 'userId', otherKey: 'eventId', through: UserEvent });
-Event.belongsToMany(User, { as: 'members', foreignKey: 'eventId', otherKey: 'userId', through: UserEvent });
+Event.belongsToMany(User, { as: 'users', foreignKey: 'eventId', otherKey: 'userId', through: UserEvent });
 
 User.belongsToMany(Group, { as: 'groups', foreignKey: 'userId', otherKey: 'groupId', through: UserGroup });
-Group.belongsToMany(User, { as: 'members', foreignKey: 'groupId', otherKey: 'userId', through: UserGroup });
+Group.belongsToMany(User, { as: 'users', foreignKey: 'groupId', otherKey: 'userId', through: UserGroup });
 
 Group.hasMany(Event, { as: 'events', foreignKey: 'groupId' });
 Event.belongsTo(Group, { as: 'group', foreignKey: 'groupId' });

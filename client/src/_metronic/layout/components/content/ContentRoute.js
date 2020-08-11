@@ -2,7 +2,7 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { Content } from "./Content";
 
-export function ContentRoute({ children, component, render, ...props }) {
+export function ContentRoute({ children, component, render, componentProps, ...props }) {
   return (
     <Route {...props}>
       {routeProps => {
@@ -20,7 +20,7 @@ export function ContentRoute({ children, component, render, ...props }) {
 
         if (component) {
           return (
-            <Content>{React.createElement(component, routeProps)}</Content>
+            <Content>{React.createElement(component, {...routeProps, ...componentProps})}</Content>
           );
         }
 
