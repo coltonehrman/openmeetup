@@ -5,7 +5,6 @@ import { toAbsoluteUrl } from '../../../../_metronic/_helpers';
 import GroupData from './GroupData';
 import GroupModal from './GroupModal';
 import * as actions from '../_redux/groupsActions';
-import _ from 'lodash';
 
 export function GroupsTable({ className }) {
   const dispatch = useDispatch();
