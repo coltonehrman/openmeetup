@@ -2,22 +2,24 @@ const express = require('express');
 const hasBodyProps = require('../../middleware/hasBodyProps');
 const hasUserSession = require('../../middleware/hasUserSession');
 
-const getAll = require('./getAll');
-const createGroup = require('./createGroup');
-const deleteGroup = require('./deleteGroup');
-const joinGroup = require('./joinGroup');
-const leaveGroup = require('./leaveGroup');
-const addCategoryToGroup = require('./addCategoryToGroup');
-const removeCategoryFromGroup = require('./removeCategoryFromGroup');
+const handleGetAllGroups = require('./api/handleGetAllGroups');
+const handleCreateGroup = require('./api/handleCreateGroup');
+const handleRemoveGroup = require('./api/handleRemoveGroup');
+const handleUpdateGroupCategories = require('./api/handleUpdateGroupCategories');
+const changeUserGroupStatus = require('./changeUserGroupStatus');
 
 const router = express.Router();
 
-router.get('/', getAll);
-router.post('/', hasUserSession, hasBodyProps('title'), createGroup);
-router.delete('/:id', hasUserSession, deleteGroup);
-router.post('/:id/join', hasUserSession, joinGroup);
-router.post('/:id/leave', hasUserSession, leaveGroup);
-router.post('/:groupId/category/:categoryId', hasUserSession, addCategoryToGroup);
-router.delete('/:groupId/category/:categoryId', hasUserSession, removeCategoryFromGroup);
+router.get('/', handleGetAllGroups);
+router.post('/', hasUserSession, hasBodyProps('title'), handleCreateGroup);
+router.delete('/:id', hasUserSession, handleRemoveGroup);
+
+router.put('/:groupId/categories', hasUserSession, handleUpdateGroupCategories);
+
+router.post('/:id/member', hasUserSession, changeUserGroupStatus('isMember', true));
+router.delete('/:id/member', hasUserSession, changeUserGroupStatus('isMember', false));
+
+router.post('/:id/owner', hasUserSession, changeUserGroupStatus('isOwner', true));
+router.delete('/:id/owner', hasUserSession, changeUserGroupStatus('isOwner', false));
 
 module.exports = router;

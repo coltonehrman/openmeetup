@@ -25,6 +25,8 @@ const login = async (req, res) => {
   const { session, body } = req;
   const { email, username, password } = body;
 
+  console.log(session, body);
+
   if ((!username && !email) || !password) {
     console.error('Please send all required fields to create User object.');
     return res.status(500).end();

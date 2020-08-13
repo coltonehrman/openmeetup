@@ -69,7 +69,7 @@ const main = async () => {
   app.post('/signup', auth.signup);
   app.post('/login', auth.login);
   app.post('/logout', auth.logout);
-  app.use('/group', groupsRouter);
+  app.use('/groups', groupsRouter);
   app.use('/event', eventRouter);
   app.use('/category', categoryRouter);
 
