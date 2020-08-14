@@ -1,4 +1,4 @@
-const { Group, UserGroup } = require('../../../models');
+const { Group } = require('../../../models');
 const userOwnsGroup = require('./userOwnsGroup');
 
 const removeSingleGroup = async (userId, groupId) => {
