@@ -8,7 +8,7 @@ const SessionStore = require('connect-session-sequelize')(session.Store);
 
 const auth = require('./controllers/auth');
 const groupsRouter = require('./controllers/groups');
-const eventRouter = require('./controllers/event');
+const eventsRouter = require('./controllers/events');
 const categoryRouter = require('./controllers/category');
 const sequelize = require('./db');
 
@@ -70,7 +70,7 @@ const main = async () => {
   app.post('/login', auth.login);
   app.post('/logout', auth.logout);
   app.use('/groups', groupsRouter);
-  app.use('/event', eventRouter);
+  app.use('/events', eventsRouter);
   app.use('/category', categoryRouter);
 
   app.get('/session', async (req, res) => {

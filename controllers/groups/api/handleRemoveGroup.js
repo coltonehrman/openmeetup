@@ -4,7 +4,7 @@ const { removeSingleGroup } = require('../functions/removeGroups');
 const handleRemoveGroup = async (req, res) => {
   const { params, session } = req;
   const sessionUserId = _.get(session, 'user.id', null);
-  const groupId = _.get(params, 'id', null);
+  const groupId = _.get(params, 'groupId', null);
 
   try {
     const removedGroup = await removeSingleGroup(sessionUserId, groupId);
