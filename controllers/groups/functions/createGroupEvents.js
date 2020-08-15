@@ -32,6 +32,17 @@ const createSingleGroupEvent = async (userId, groupId, { title, description, tim
   // associate event to group
   await group.addEvent(event);
 
+  // assocaite user to event
+  await event.addUser(userId, {
+    through: {
+      isParticipant: true,
+      isOrganizer: true,
+      isCreator: true
+    }
+  });
+
+  await event.reload();
+
   return event;
 };
 
