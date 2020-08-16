@@ -31,6 +31,7 @@ const updateSingleGroup = async (userId, groupId, { title, description, location
     group.setDataValue('location', newLocation);
   }
 
+  // save updates
   await group.save();
 
   return group;

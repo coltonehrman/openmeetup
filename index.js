@@ -9,7 +9,7 @@ const SessionStore = require('connect-session-sequelize')(session.Store);
 const auth = require('./controllers/auth');
 const groupsRouter = require('./controllers/groups');
 const eventsRouter = require('./controllers/events');
-const categoryRouter = require('./controllers/category');
+const categoriesRouter = require('./controllers/categories');
 const sequelize = require('./db');
 
 const {
@@ -19,7 +19,6 @@ const {
   Category,
   UserGroup,
   UserEvent,
-  EventCategory,
   GroupCategory
 } = require('./models');
 
@@ -71,7 +70,7 @@ const main = async () => {
   app.post('/logout', auth.logout);
   app.use('/groups', groupsRouter);
   app.use('/events', eventsRouter);
-  app.use('/category', categoryRouter);
+  app.use('/categories', categoriesRouter);
 
   app.get('/session', async (req, res) => {
     const { session } = req;
@@ -94,6 +93,9 @@ const main = async () => {
   app.get('/data', async (_, res) => {
     const { Session } = sequelize.models;
 
+    // kill all sessions
+    // await Session.destroy({ truncate: true });
+
     const users = await User.findAll({ include: [
       'events', {
         association: 'groups',
@@ -114,12 +116,11 @@ const main = async () => {
       include: ['users', 'events', 'categories']
     });
 
-    const events = await Event.findAll({ include: ['users', 'group', 'categories'] });
-    const categories = await Category.findAll({ include: ['groups', 'events'] });
+    const events = await Event.findAll({ include: ['users', 'group'] });
+    const categories = await Category.findAll({ include: ['groups'] });
     
     const userGroups = await UserGroup.findAll();
     const userEvents = await UserEvent.findAll();
-    const eventCategories = await EventCategory.findAll();
     const groupCategories = await GroupCategory.findAll();
 
     const sessions = await Session.findAll();
@@ -149,7 +150,6 @@ const main = async () => {
       categories,
       userGroups,
       userEvents,
-      eventCategories,
       groupCategories,
       sessions
     });
