@@ -1,5 +1,4 @@
-const { DataTypes, Model } = require('sequelize');
-const sequelize = require('../db');
+const { Model } = require('sequelize');
 const bcrypt = require('bcrypt');
 
 class User extends Model {
@@ -13,29 +12,6 @@ class User extends Model {
   }
 }
 
-User.init({
-  username: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
-  },
-  isAdmin: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-    defaultValue: false
-  },
-  location: DataTypes.GEOGRAPHY('POINT', 4326)
-}, { sequelize });
-
 const hashPassword = (password) => new Promise((resolve, reject) => {
   const SALT_ROUNDS = 10;
 
@@ -45,13 +21,38 @@ const hashPassword = (password) => new Promise((resolve, reject) => {
   });
 });
 
-User.addHook('beforeCreate', async (user) => {
-  const { password } = user;
-  try {
-    user.password = await hashPassword(password);
-  } catch(err) {
-    throw new Error(`Could\'t hash password: ${err}`);
-  }
-});
+module.exports = (sequelize, DataTypes) => {
+  User.init({
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
+    },
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    location: DataTypes.GEOGRAPHY('POINT', 4326)
+  }, { sequelize });
 
-module.exports = User;
+  User.addHook('beforeCreate', async (user) => {
+    const { password } = user;
+    try {
+      user.password = await hashPassword(password);
+    } catch (err) {
+      throw new Error(`Could\'t hash password: ${err}`);
+    }
+  });
+
+  return User;
+};

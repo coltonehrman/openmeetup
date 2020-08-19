@@ -4,20 +4,22 @@ const signup = async (req, res) => {
   const { session, body } = req;
   const { username, email, password } = body;
 
-  if (!username || !email || !password) {
-    const error = 'Please send all required fields to create User object.';
-    console.error(error);
-    return res.status(500).json(error);
-  }
-
   try {
+    if (!username || !email || !password)
+      throw new Error('Please send all required fields to create User object.');
+
     let user = await User.create({ username, email, password });
+
     user = user.dataValues;
+
+    // remove password from user session
     delete user.password;
+
     session.user = user;
-    res.status(200).json(user);
-  } catch (error) {
-    return res.status(500).send(error);
+
+    return res.status(200).json(user);
+  } catch (err) {
+    return res.status(500).json(err.message);
   }
 };
 
@@ -25,50 +27,45 @@ const login = async (req, res) => {
   const { session, body } = req;
   const { email, username, password } = body;
 
-  console.log(session, body);
+  console.log(body);
 
-  if ((!username && !email) || !password) {
-    console.error('Please send all required fields to create User object.');
-    return res.status(500).end();
+  try {
+    if ((!username && !email) || !password)
+      throw new Error('Please send all required fields to create User object.');
+
+    if (username && email)
+      throw new Error('Please only send either a username or email to login with.');
+
+    let user;
+
+    if (username) {
+      user = await User.findOne({ where: { username }});
+    } else if (email) {
+      user = await User.findOne({ where: { email }});
+    }
+
+    if (!user) throw new Error('No User exists.');
+
+    if (!(await user.isValidPassword(password))) throw new Error('Invalid password for user.');
+
+    user = user.dataValues;
+
+    // remove password from user session
+    delete user.password;
+
+    session.user = user;
+    
+    return res.status(200).json(user);
+  } catch (err) {
+    return res.status(500).json(err.message);
   }
-
-  if (username && email) {
-    console.error('Please only send either a username or email to login with.');
-    return res.status(500).end();
-  }
-
-  let user;
-  if (username) {
-    user = await User.findOne({ where: { username }});
-  } else if (email) {
-    user = await User.findOne({ where: { email }});
-  }
-
-  if (!user) {
-    const error = 'No User exists.';
-    console.error(error);
-    return res.status(500).json(error);
-  }
-
-  if (!(await user.isValidPassword(password))) {
-    console.error('Invalid password for user.');
-    return res.status(500).end();
-  }
-
-  user = user.dataValues;
-  delete user.password;
-  session.user = user;
-  res.status(200).json(user);
 };
 
 const logout = async (req, res) => {
   req.session.destroy((err) => {
-    if (err) {
-      console.error('Error when trying to destroy session: ', error);
-      return res.status(500).end();
-    }
-    return res.status(200).end();
-  })
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(null);
+  });
 };
 
 module.exports = {

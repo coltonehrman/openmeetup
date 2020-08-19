@@ -1,11 +1,10 @@
-const { DataTypes, Model } = require('sequelize');
-const sequelize = require('../db');
+const { Model } = require('sequelize');
 const _ = require('lodash');
 
 class Group extends Model {
   async populateMe(id) {
     if (!id) return;
-    
+
     const [me] = await this.getUsers({
       through: {
         where: { userId: id }
@@ -17,17 +16,17 @@ class Group extends Model {
   }
 }
 
-Group.init({
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  location: DataTypes.GEOGRAPHY('POINT', 4326),
-  me: DataTypes.VIRTUAL
-}, { sequelize });
-
-module.exports = Group;
+module.exports = (sequelize, DataTypes) => {
+  return Group.init({
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    location: DataTypes.GEOGRAPHY('POINT', 4326),
+    me: DataTypes.VIRTUAL
+  }, { sequelize });
+};

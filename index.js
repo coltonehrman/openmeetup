@@ -3,16 +3,16 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const Sequelize = require('sequelize');
 const SessionStore = require('connect-session-sequelize')(session.Store);
 
 const auth = require('./controllers/auth');
 const groupsRouter = require('./controllers/groups');
 const eventsRouter = require('./controllers/events');
 const categoriesRouter = require('./controllers/categories');
-const sequelize = require('./db');
 
 const {
+  sequelize,
+  Sequelize,
   User,
   Group,
   Event,
@@ -22,21 +22,7 @@ const {
   GroupCategory
 } = require('./models');
 
-const verifyAndSyncDB = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
-    // sync db models
-    const ALTER_DB = false;
-    await sequelize.sync({ force: ALTER_DB, alter: ALTER_DB });
-    console.log('Synced database models.');
-  } catch (error) {
-    throw new Error('Unable to connect to the database:', error);
-  }
-};
-
 const main = async () => {
-  await verifyAndSyncDB();
   const {
     PORT = 3000,
     SESSION_SECRET = 'stupid secret fake session secret key'
