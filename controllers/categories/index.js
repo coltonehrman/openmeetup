@@ -1,6 +1,6 @@
 const express = require('express');
 const hasBodyProps = require('../../middleware/hasBodyProps');
-const hasUserSession = require('../../middleware/hasUserSession');
+const hasAdminSession = require('../../middleware/hasAdminSession');
 
 const router = express.Router();
 
@@ -10,9 +10,9 @@ const handleUpdateCategory = require('./api/handleUpdateCategory');
 const handleRemoveCategory = require('./api/handleRemoveCategory');
 
 router.get('/', handleGetAllCategories);
-router.post('/', hasUserSession, hasBodyProps('title'), handleCreateCategory);
+router.post('/', hasAdminSession, hasBodyProps('title'), handleCreateCategory);
 
-router.put('/:categoryId', hasUserSession, handleUpdateCategory);
-router.delete('/:categoryId', hasUserSession, handleRemoveCategory);
+router.put('/:categoryId', hasAdminSession, handleUpdateCategory);
+router.delete('/:categoryId', hasAdminSession, handleRemoveCategory);
 
 module.exports = router;

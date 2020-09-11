@@ -23,6 +23,8 @@ const {
 } = require('./models');
 
 const main = async () => {
+  await sequelize.sync();
+
   const {
     PORT = 3000,
     SESSION_SECRET = 'stupid secret fake session secret key'

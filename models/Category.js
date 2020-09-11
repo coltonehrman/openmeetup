@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     isFeatured: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: true
+      defaultValue: false
     }
   }, { sequelize });
 };
