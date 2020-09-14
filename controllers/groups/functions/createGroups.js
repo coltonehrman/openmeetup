@@ -1,7 +1,7 @@
 const { Group } = require('../../../models');
 const { createLocationPoint } = require('../../postgis');
 
-const createSingleGroup = async (userId, { title, description, location }) => {
+const createSingleGroup = async (userId, { title, description, location, categories }) => {
   // check for valid title
   if (title.toString().trim() === '')
     throw new Error('Group must have a title.');
@@ -15,6 +15,10 @@ const createSingleGroup = async (userId, { title, description, location }) => {
     include: ['users']
   });
 
+  if (categories && categories.length > 0) {
+    await group.addCategories(categories);
+  }
+
   // check for valid userId
   if (userId && !(Number.isNaN(parseInt(userId)))) {
     // add creator to group
@@ -27,7 +31,7 @@ const createSingleGroup = async (userId, { title, description, location }) => {
     });
 
     await Promise.all([
-      group.reload(),             // reload to populate users data
+      group.reload(),          // reload to populate users data
       group.populateMe(userId) // populate me
     ]);
   }
