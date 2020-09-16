@@ -3,6 +3,7 @@ const hasBodyProps = require('../../middleware/hasBodyProps');
 const hasUserSession = require('../../middleware/hasUserSession');
 
 const handleGetAllGroups = require('./api/handleGetAllGroups');
+const handleGetSingleGroup = require('./api/handleGetSingleGroup');
 const handleCreateGroup = require('./api/handleCreateGroup');
 const handleUpdateGroup = require('./api/handleUpdateGroup');
 const handleRemoveGroup = require('./api/handleRemoveGroup');
@@ -15,6 +16,7 @@ const router = express.Router();
 
 router.get('/', handleGetAllGroups);
 router.post('/', hasUserSession, hasBodyProps('title'), handleCreateGroup);
+router.get('/:groupId', handleGetSingleGroup);
 router.put('/:groupId', hasUserSession, handleUpdateGroup);
 router.delete('/:groupId', hasUserSession, handleRemoveGroup);
 
